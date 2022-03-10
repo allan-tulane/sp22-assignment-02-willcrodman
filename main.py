@@ -43,14 +43,10 @@ def pad(x,y):
         y = ['0'] + y
     return x,y
 
-
-
 def subquadratic_multiply(x, y):
 
     xvec = x.binary_vec
     yvec = y.binary_vec
-
-    print(xvec, yvec)
 
     if x.decimal_val <= 1 and y.decimal_val <= 1:
       return BinaryNumber(x.decimal_val * y.decimal_val)
@@ -68,9 +64,9 @@ def subquadratic_multiply(x, y):
     mid_right = subquadratic_multiply(xR, yL)
   
     mid = BinaryNumber(mid_left.decimal_val + mid_right.decimal_val)
-    mid = bit_shift(mid, len(xvec)//2) 
+    mid = bit_shift(mid, n//2) 
 
-    left = bit_shift(left, len(xvec))
+    left = bit_shift(left, n)
   
     right = subquadratic_multiply(xR, yR)
 
@@ -79,14 +75,23 @@ def subquadratic_multiply(x, y):
 
 ## Feel free to add your own tests here.
 def test_multiply():
-    assert subquadratic_multiply(BinaryNumber(2), BinaryNumber(2)) == 2*2
-    assert subquadratic_multiply(BinaryNumber(5), BinaryNumber(7)) == 5*7
+    assert subquadratic_multiply(BinaryNumber(2), BinaryNumber(2)).decimal_val == 2*2
+    assert subquadratic_multiply(BinaryNumber(5), BinaryNumber(7)).decimal_val == 5*7
 
 def time_multiply(x, y, f):
     start = time.time()
-    # multiply two numbers x, y using function f
+    f(BinaryNumber(x), BinaryNumber(y))
     return (time.time() - start)*1000
 
-    
+if __name__ == "__main__":
+  print("Testing assertions...")
+  test_multiply()
+
+  print(f"Testing time multiply:")
+  test_range = list(map(lambda n: 2**n, range(0,1000,100)))
+  print(test_range)
+  for test in test_range:
+    t = time_multiply(test, test, subquadratic_multiply)
+    print("Test {:.2e} * {:.2e} retured in {:.8f}ms".format(test, test, t))
     
 
