@@ -59,17 +59,16 @@ def subquadratic_multiply(x, y):
     yL, yR = split_number(yvec)
 
     left = subquadratic_multiply(xL, yL)
-  
-    mid_left = subquadratic_multiply(xL, yR)
-    mid_right = subquadratic_multiply(xR, yL)
-  
-    mid = BinaryNumber(mid_left.decimal_val + mid_right.decimal_val)
-    mid = bit_shift(mid, n//2) 
-
-    left = bit_shift(left, n)
-  
     right = subquadratic_multiply(xR, yR)
 
+    xSum, ySum = BinaryNumber(xL.decimal_val + xR.decimal_val), BinaryNumber(yL.decimal_val + yR.decimal_val)
+
+    mid_opp = subquadratic_multiply(xSum, ySum).decimal_val 
+    mid = BinaryNumber(mid_opp - left.decimal_val - right.decimal_val)
+  
+    mid = bit_shift(mid, n//2) 
+    left = bit_shift(left, n)
+  
     return BinaryNumber(left.decimal_val + mid.decimal_val + right.decimal_val)
   
 
@@ -89,7 +88,6 @@ if __name__ == "__main__":
 
   print(f"Testing time multiply:")
   test_range = list(map(lambda n: 2**n, range(0,1000,100)))
-  print(test_range)
   for test in test_range:
     t = time_multiply(test, test, subquadratic_multiply)
     print("Test {:.2e} * {:.2e} retured in {:.8f}ms".format(test, test, t))
